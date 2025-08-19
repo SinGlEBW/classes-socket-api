@@ -1,15 +1,15 @@
 {
   "license": "MIT",
-  "name": "@classes/socket-api",
+  "name": "lib-socket-api",
   "private": false,
   "author": "SinGlEBW",
-  "homepage": "https://github.com/SinGlEBW/classes-socket-api#readme",
+  "homepage": "https://github.com/SinGlEBW/lib-socket-api#readme",
   "bugs": {
-    "url": "https://github.com/SinGlEBW/classes-socket-api/issues"
+    "url": "https://github.com/SinGlEBW/lib-socket-api/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SinGlEBW/classes-socket-api.git"
+    "url": "https://github.com/SinGlEBW/lib-socket-api.git"
   },
   "type": "module",
   "version": "1.3.36",
