@@ -33,6 +33,7 @@ export class SocketApi {
   private static options: SocketApi_Options_P = {
     isReConnectNetworkOnline: false,
   };
+  
   private static wsApi = new WsApi();
   private static delay = new DelaysPromise();
   private static internet = new NetworkInformation([new NetworkInformationPC(), new NetworkInformationCordova()]);
@@ -100,6 +101,7 @@ export class SocketApi {
   static on: <K extends keyof CommonEvents>(name: K, cb: CommonEvents[K]) => void  = (name, listener) => {
     const wsApi_RegisteredEvents = SocketApi.wsApi.getRegisteredEvents();
     if (!wsApi_RegisteredEvents.includes(name)) {
+      console.dir('on () ', SocketApi.events.getListNameEvents());
       SocketApi.events.subscribe(name as any, listener) ;
     } else {
       SocketApi.wsApi.on(name as any, listener);
@@ -128,7 +130,12 @@ export class SocketApi {
 
     const { WsOptions, SocketApiOptions } = SocketApi.splitOptions(options);
     SocketApi.internet.run((isNetwork, textStatus) => {
-      this.events.publish("network", { isNetwork, textStatus });
+      console.log(this.events.getListNameEvents())
+      console.log(this.events.getSubscribers())
+      console.log(this.events.getSubscribers())
+      console.log(isNetwork)
+      console.log(textStatus)
+      SocketApi.events.publish("network", { isNetwork, textStatus });
       isNetwork ? SocketApi.online() : SocketApi.offline();
     });
     SocketApi.setOptions(SocketApiOptions);
