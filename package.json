@@ -1,0 +1,58 @@
+{
+  "license": "MIT",
+  "name": "@classes/socket-api",
+  "private": false,
+  "author": "SinGlEBW",
+  "homepage": "https://github.com/SinGlEBW/classes-socket-api#readme",
+  "bugs": {
+    "url": "https://github.com/SinGlEBW/classes-socket-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SinGlEBW/classes-socket-api.git"
+  },
+  
+  "type": "module",
+  "version": "1.3.35",
+
+  "module": "./dist/index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  
+  "files": ["dist"],
+  "publishConfig": {
+    "directory": "dist"
+  },
+  "keywords": [
+    "@classes/socket-api",
+    "SocketApi"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "send": "node publishVersion.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.3.23",
+    "glob": "^10.3.12",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.6",
+    "vite-plugin-dts": "^3.8.3",
+    "vite-plugin-lib-inject-css": "^2.0.1"
+  },
+  "dependencies": {
+    "uuid4": "^2.0.3"
+  },
+  "peerDependencies": {
+  
+  }
+}
