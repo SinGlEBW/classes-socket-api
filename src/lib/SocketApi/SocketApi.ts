@@ -37,7 +37,7 @@ export class SocketApi {
   private static wsApi = new WsApi();
   private static delay = new DelaysPromise();
   private static internet = new NetworkInformation([new NetworkInformationPC(), new NetworkInformationCordova()]);
-  private static events = new EventSubscribers<SocketApi_Events>(["timeOffReConnect", "reConnect",]);
+  private static events = new EventSubscribers<SocketApi_Events>(["timeOffReConnect", "reConnect", "network"]);
   private static saveID: Partial<Record<"idReConnect" | "checkConnect", number | null>> = {
     idReConnect: null,
     checkConnect: null,
@@ -130,11 +130,6 @@ export class SocketApi {
 
     const { WsOptions, SocketApiOptions } = SocketApi.splitOptions(options);
     SocketApi.internet.run((isNetwork, textStatus) => {
-      console.log(this.events.getListNameEvents())
-      console.log(this.events.getSubscribers())
-      console.log(this.events.getSubscribers())
-      console.log(isNetwork)
-      console.log(textStatus)
       SocketApi.events.publish("network", { isNetwork, textStatus });
       isNetwork ? SocketApi.online() : SocketApi.offline();
     });

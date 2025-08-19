@@ -2,13 +2,13 @@
 
 
 ### Events. Working after register SocketApi.init
-| Name             | Type                                       |  
-|------------------|--------------------------------------------|  
-|`status`          |`boolean`                                   |  
-|`msg`             |`any`                                       | 
-|`reConnect`       |`boolean`                                   | 
-|`timeOffReConnect`|`{ status: boolean, msg: string }`          | 
-|`network`         |`{ isNetwork: boolean, textStatus: string }`| 
+| Name             | Type                                       | SocketApi.init |  
+|------------------|--------------------------------------------|`after`         | 
+|`status`          |`boolean`                                   |`after`         |  
+|`msg`             |`any`                                       |`after`         | 
+|`reConnect`       |`boolean`                                   |`after`         | 
+|`timeOffReConnect`|`{ status: boolean, msg: string }`          |`after`         | 
+|`network`         |`{ isNetwork: boolean, textStatus: string }`|`before`        | 
         
 
 ### Props
