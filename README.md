@@ -1,13 +1,14 @@
 <h3 align="center">SocketApi</h3>
 
 
-### Events 
-| Name             | Type                             |  
-|------------------|----------------------------------| 
-|`status`          |`boolean`                         |  
-|`msg`             |`any`                             | 
-|`reConnect`       |`boolean`                         | 
-|`timeOffReConnect`|`{ status: boolean, msg: string }`| 
+### Events. Working after register SocketApi.init
+| Name             | Type                                       |  
+|------------------|--------------------------------------------|  
+|`status`          |`boolean`                                   |  
+|`msg`             |`any`                                       | 
+|`reConnect`       |`boolean`                                   | 
+|`timeOffReConnect`|`{ status: boolean, msg: string }`          | 
+|`network`         |`{ isNetwork: boolean, textStatus: string }`| 
         
 
 ### Props

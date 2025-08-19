@@ -17,6 +17,7 @@ import type { SocketApi_Options_P, SocketApi_StateProps_P } from "./SocketApi.ty
 interface SocketApi_Events {
   timeOffReConnect(info: { status: boolean; msg: string }): void;
   reConnect(status: boolean): void;
+  network(info:{isNetwork: boolean, textStatus: string}): void;
 }
 
 type CommonEvents = SocketApi_Events & WsApi_Events;
@@ -35,7 +36,7 @@ export class SocketApi {
   private static wsApi = new WsApi();
   private static delay = new DelaysPromise();
   private static internet = new NetworkInformation([new NetworkInformationPC(), new NetworkInformationCordova()]);
-  private static events = new EventSubscribers<SocketApi_Events>(["timeOffReConnect", "reConnect"]);
+  private static events = new EventSubscribers<SocketApi_Events>(["timeOffReConnect", "reConnect",]);
   private static saveID: Partial<Record<"idReConnect" | "checkConnect", number | null>> = {
     idReConnect: null,
     checkConnect: null,
@@ -126,8 +127,9 @@ export class SocketApi {
   static init = (options: WsApi_Options_P & SocketApi_Options_P) => {
 
     const { WsOptions, SocketApiOptions } = SocketApi.splitOptions(options);
-    SocketApi.internet.run((status) => {
-      status ? SocketApi.online() : SocketApi.offline();
+    SocketApi.internet.run((isNetwork, textStatus) => {
+      this.events.publish("network", { isNetwork, textStatus });
+      isNetwork ? SocketApi.online() : SocketApi.offline();
     });
     SocketApi.setOptions(SocketApiOptions);
     SocketApi.wsApi.init(WsOptions);
@@ -147,6 +149,8 @@ export class SocketApi {
       console.log("DISCONNECT WS");
       SocketApi.wsApi.disconnect();
       SocketApi.resetState();
+      SocketApi.events.resetSubscribers();
+   
     }
   }
 
