@@ -1,4 +1,4 @@
-import { EventSubscribers } from "@deps/EventSubscribers/EventSubscribers";
+import { EventSubscribers } from "../EventSubscribers/EventSubscribers";
 import type { WsApi_Events, WsApi_Options_P, WsApi_StateProps, WsApiE_StatusConnect_OR } from "./WsApi.types";
 
 //INFO: Назначать функции стрелочными иначе this не читаем
@@ -19,7 +19,7 @@ export class WsApi {
   };
 
   private initOptions = false;
-  private events = new EventSubscribers<WsApi_Events>(["status", "msg"]);
+  events = new EventSubscribers<WsApi_Events>(["status", "msg", "error"]);
 
   private stateDefault = this.copyState(this.state);
   private resetState() {
@@ -46,27 +46,34 @@ export class WsApi {
     }
   };
 
-  private openHandler = () => {
-    this.setStatus("ready");
-  };
-
-  private closeHandler = () => {
-    this.setStatus("close");
-  };
+  private openHandler = () => { this.setStatus("ready"); };
+  private closeHandler = () => { this.setStatus("close"); };
 
   private msgHandler = (e) => {
     const data = JSON.parse(e.data ? e.data : "{}");
     try {
       const { action } = data;
+      const itemReq = this.findDataRequestByAction(action);
+      if(itemReq){
+        const { cb, ...other } = itemReq
+        const { payload, ...otherData } = other
+        this.events.publish("msg",  {...data, request: {...otherData, ...payload}} );
+      }else{
+        this.events.publish("msg",  data);
+      }
       action && this.filterSaveItemsByResponse(data);
-      this.events.publish("msg", data);
+
     } catch (error) {
-      this.events.publish("msg", JSON.parse("{}"));
+      this.events.publish("msg", {});
     }
   };
 
-  private errHandler = (err) => {
-    console.log("errHandler",err)
+  private errHandler = (err: WebSocketEventMap['error']) => {
+    this.events.publish("error", {
+      readyState: this.state.ws?.readyState as number,
+      arrSaveReq: this.getRequestSave(),
+    });
+
     this.setStatus("error");
   };
 
@@ -99,14 +106,14 @@ export class WsApi {
   };
 
   /*----------------------------------------------------------------------------------------------------------*/
-  
+  getState = () => this.state;
   getSocket = () => this.state.ws;
   getStatusSocket = () => this.state.statusConnect;
   getRequestSave = () => this.state.arrSaveReq;
   getOptions = () => this.options;
-  getRegisteredEvents = this.events.getListNameEvents;
-  on = this.events.subscribe;
-  off = this.events.unsubscribe;
+  // getRegisteredEvents = this.events.getListNameEvents;
+  // on = this.events.subscribe;
+  // off = this.events.unsubscribe;
 
 
   init = (options: typeof this.options) => {
@@ -141,7 +148,9 @@ export class WsApi {
 
   disconnect() {
     this.close();
+    this.setStatus("disconnect");
     this.resetState();
+    this.events.resetSubscribers();
   }
 
   send(data) {
@@ -159,4 +168,15 @@ export class WsApi {
       }
     }
   }
+  //INFO: Запросов может быть несколько. И время запроса разное
+  private getItemsRequestSaveByAction(action:string){
+    return this.getRequestSave().filter((item) => item?.payload?.action === action);
+  }
+  findDataRequestByAction = (action:string, ) => {
+    const itemsRequestByAction = this.getItemsRequestSaveByAction(action);
+    const itemsRequestByActionSort = itemsRequestByAction.sort((a, b) => b.requestTime - a.requestTime);
+    //INFO: Пока предполагаем что 1 запрос одного action происходит
+    return itemsRequestByActionSort[0];
+  }
+
 }

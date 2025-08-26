@@ -93,14 +93,14 @@ export class DelaysPromise{
       promiseWatch - промис который должен сработать в течении (second) времени.
       potentialCaseCB - cb который вызывается спустя время (second) при условии если промис promiseWatch не отработал
     */
-    let isResponce = 1;
+    let isResponse = 1;
     promiseWatch()
     .then(() => { 
-      (isResponce === 1) && (isResponce = 0);
+      (isResponse === 1) && (isResponse = 0);
     })
   
     let idInterval = setInterval(() => { 
-      if(isResponce === 1){ potentialCaseCB(); }
+      if(isResponse === 1){ potentialCaseCB(); }
       clearInterval(idInterval);
     }, second * 1000);
     
@@ -114,26 +114,26 @@ export class DelaysPromise{
         potentialCaseCB - cb который вызывается спустя время (second) при условии если промис promiseWatch не отработал
                           potentialCaseCB должна вернуть объект который будет передан в reject
       */
-      let isResponce = 1;
+      let isResponse = 1;
       let errPayload = {status: false, msg: '',}
       promiseWatch()
       .then((data) => { 
-        if(isResponce === 1) {
-          isResponce = 0;
+        if(isResponse === 1) {
+          isResponse = 0;
           resolve(data);
         }
       })
       .catch((err) => { 
-        if(isResponce === 1) {
-          isResponce = 0;
+        if(isResponse === 1) {
+          isResponse = 0;
           errPayload.msg = err
           reject(err);
         }
       })
     
       let idInterval = setInterval(() => { 
-        if(isResponce === 1){ 
-          isResponce = 0;
+        if(isResponse === 1){ 
+          isResponse = 0;
           if(typeof cbPotentialReject === 'function'){
             reject({status: false, msg: '', ...cbPotentialReject(errPayload) as any})
             return;
@@ -143,6 +143,7 @@ export class DelaysPromise{
         clearInterval(idInterval);
       }, second * 1000);
   })
+
 
 }
 
